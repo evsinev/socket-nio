@@ -27,7 +27,7 @@ public class WebSocketClientTest {
 //                .build();
 
         // GET /socket.io/1/websocket/5c72d902-04d6-4b9a-bfda-551570747c7a HTTP/1.1\r\n
-        WebSocketHandshake request = new WebSocketHandshake.Builder()
+        WebSocketHandshakeRequest request = new WebSocketHandshakeRequest.Builder()
                 .url("http://localhost:8080/socket.io/1/websocket/1232d902-04d6-4b9a-bfda-551570747c7a/" +
                         "?payber_id=3" +
                         "&date=1413570429230" +
@@ -35,15 +35,17 @@ public class WebSocketClientTest {
                         "&v=1.2")
                 .build();
 
-        client.connect(request, new IWebSocketListener() {
+        WebSocketSession session = client.connect(request);
+
+        session.startAndWait(new IWebSocketListener() {
             @Override
             public void onMessage(MutableWebSocketFrame aFrame, WebSocketContext aContext) {
-                LOG.debug("Frame: {}", aFrame);
+                 LOG.debug("Frame: {}", aFrame);
             }
 
             @Override
             public void onFailure(Throwable aError) {
-                LOG.error("Error: {}", aError);
+                LOG.error("Failure", aError);
             }
         });
 

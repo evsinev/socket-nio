@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  *
@@ -18,6 +18,7 @@ public class WebSocketWriterThread extends Thread {
 
     private final BufferedOutputStream out;
     private final OutputQueue queue;
+    private static final AtomicLong THREAD_ID = new AtomicLong();
 
     public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketListener aListener) {
         queue = aQueue;
@@ -26,6 +27,8 @@ public class WebSocketWriterThread extends Thread {
 
     @Override
     public void run() {
+        setName("web-socket-writer-"+THREAD_ID.incrementAndGet());
+
         WebSocketFrameEncoder encoder = new WebSocketFrameEncoder();
 
         while(!isInterrupted()) {

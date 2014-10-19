@@ -1,6 +1,13 @@
 package com.payneteasy.socketio;
 
-import com.payneteasy.websocket.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.payneteasy.socketio.json.IJsonConverter;
+import com.payneteasy.websocket.IWebSocketListener;
+import com.payneteasy.websocket.MutableWebSocketFrame;
+import com.payneteasy.websocket.WebSocketContext;
+import com.payneteasy.websocket.WebSocketFrameBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +22,13 @@ class SocketIoProcessor implements IWebSocketListener {
 
     private final SocketIoMessageDecoder decoder = new SocketIoMessageDecoder();
     private final ISocketIoListener listener;
-    private final SocketIoMessageEncoder encoder = new SocketIoMessageEncoder();
+    private final IJsonConverter json;
+    private final SocketIoSession session;
 
-    public SocketIoProcessor(ISocketIoListener aListener) {
+    public SocketIoProcessor(ISocketIoListener aListener, IJsonConverter aJson, SocketIoSession aSession) {
         listener = aListener;
+        json = aJson;
+        session = aSession;
     }
 
     @Override
@@ -26,15 +36,14 @@ class SocketIoProcessor implements IWebSocketListener {
         SocketIoMessage message = decoder.decode(aFrame);
         LOG.debug("S-IN: {}", message);
 
-        SocketIoContext ioContext = new SocketIoContext();
 
         switch (message.type) {
             case HEARTBEAT:
-                sendHeartBeat(aContext);
+                sendHeartBeat();
                 break;
 
             case EVENT:
-                listener.onEvent(message.data, ioContext);
+                processEvent(listener, message);
                 break;
 
             case CONNECT:
@@ -59,21 +68,54 @@ class SocketIoProcessor implements IWebSocketListener {
 
     }
 
+    private void processEvent(ISocketIoListener aListener, SocketIoMessage aMessage) {
+//        SocketIoEvent event = json.fromJson(aMessage.data, SocketIoEvent.class);
+
+        JsonElement event = json.parse(aMessage.data);
+        Object[] argsArray;
+
+        if (event instanceof JsonObject) {
+            JsonObject object = (JsonObject)event;
+
+            if (object.has("args")) {
+                JsonArray args = object.getAsJsonArray("args");
+                argsArray = new Object[args.size()];
+                for (int i = 0; i < args.size(); i++) {
+                    JsonElement e = args.get(i);
+                    if (e != null && !e.isJsonNull()) {
+                        argsArray[i] = args.get(i);
+                    }
+                }
+            } else {
+                argsArray = new Object[0];
+            }
+
+            String eventName = object.get("name").getAsString();
+
+            SocketIoContext context = new SocketIoContext(aMessage.id, session);
+            aListener.onEvent(eventName, context, argsArray);
+
+        } else {
+            LOG.error("Unknown json type: {}", event);
+        }
+
+
+
+    }
+
     private void sendConnectionClose(WebSocketContext aContext) {
-        aContext.sendFrame(WebSocketFrameBuilder.createConnectionClose("got socket-io disconnect"));
+        aContext.sendFrame(WebSocketFrameBuilder.createConnectionClose("Got server's socket-io disconnect"));
     }
 
-    private void sendHeartBeat(WebSocketContext aContext) {
-        SocketIoMessage message = new SocketIoMessage();
-        message.type = HEARTBEAT;
-        send(message, aContext);
-
+    private void sendHeartBeat() {
+        SocketIoMessage message = new SocketIoMessage.Builder()
+                .type(HEARTBEAT)
+                .build();
+        send(message);
     }
 
-    private void send(SocketIoMessage aMessage, WebSocketContext aContext) {
-        LOG.debug("S-QUEUE: {}", aMessage);
-        WebSocketFrame frame = encoder.encode(aMessage);
-        aContext.sendFrame(frame);
+    private void send(SocketIoMessage aMessage) {
+        session.sendMessage(aMessage);
     }
 
     @Override

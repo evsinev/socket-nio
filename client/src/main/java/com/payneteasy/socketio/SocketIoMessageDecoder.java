@@ -1,6 +1,7 @@
 package com.payneteasy.socketio;
 
 import com.payneteasy.websocket.MutableWebSocketFrame;
+import com.payneteasy.websocket.WebSocketUtil;
 
 import static com.payneteasy.socketio.SocketIoMessage.Type.valueOf;
 import static java.lang.Integer.parseInt;
@@ -29,17 +30,20 @@ public class SocketIoMessageDecoder {
 
         String[] fields = text.split(":", 4);
 
-        SocketIoMessage message = new SocketIoMessage();
-        message.type = valueOf(parseInt(fields[FIELD_TYPE]));
-
-        message.id       = getField(fields, FIELD_ID);
-        message.endPoint = getField(fields, FIELD_ENDPOINT);
-        message.data     = getField(fields, FIELD_DATA);
-
-        return message;
+        return new SocketIoMessage.Builder()
+                .type(valueOf(parseInt(fields[FIELD_TYPE])))
+                .id(getField(fields, FIELD_ID))
+                .endPoint(getField(fields, FIELD_ENDPOINT))
+                .data(getField(fields, FIELD_DATA))
+                .build();
     }
 
     private String getField(String[] aFields, int aPosition) {
-        return aPosition < aFields.length ? aFields[aPosition] : null;
+        if(aPosition < aFields.length ) {
+            String value = aFields[aPosition];
+            return WebSocketUtil.hasText(value) ? value : null;
+        } else {
+            return null;
+        }
     }
 }

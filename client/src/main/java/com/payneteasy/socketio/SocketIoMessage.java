@@ -1,7 +1,5 @@
 package com.payneteasy.socketio;
 
-import com.payneteasy.websocket.WebSocketUtil;
-
 import static com.payneteasy.websocket.WebSocketUtil.hasText;
 
 /**
@@ -10,10 +8,17 @@ import static com.payneteasy.websocket.WebSocketUtil.hasText;
 public class SocketIoMessage {
 
 
-    public Type type;
-    public String id;
-    public String endPoint;
-    public String data;
+    public final Type type;
+    public final String id;
+    public final String endPoint;
+    public final String data;
+
+    private SocketIoMessage(Builder aBuilder){
+        type = aBuilder.theType;
+        id = aBuilder.theId;
+        endPoint = aBuilder.theEndPoint;
+        data = aBuilder.theData;
+    }
 
     public enum Type {
           DISCONNECT    (0)
@@ -76,4 +81,36 @@ public class SocketIoMessage {
     }
 
 
+    public static class Builder {
+
+        public Builder type(Type aType) {
+            theType = aType;
+            return this;
+        }
+
+        public Builder id(String aId) {
+            theId = aId;
+            return this;
+        }
+
+        public Builder endPoint(String aEndPoint) {
+            theEndPoint = aEndPoint;
+            return this;
+        }
+
+        public Builder data(String aData) {
+            theData = aData;
+            return this;
+        }
+
+        public SocketIoMessage build() {
+            return new SocketIoMessage(this);
+        }
+
+        private Type theType;
+        private String theId;
+        private String theEndPoint;
+        private String theData;
+
+    }
 }

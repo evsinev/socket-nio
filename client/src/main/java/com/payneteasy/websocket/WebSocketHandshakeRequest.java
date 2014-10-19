@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  *
  */
-public class WebSocketHandshake {
+public class WebSocketHandshakeRequest {
 
     private final URL url;
 
@@ -16,7 +16,7 @@ public class WebSocketHandshake {
         return url;
     }
 
-    private WebSocketHandshake(Builder aBuilder){
+    private WebSocketHandshakeRequest(Builder aBuilder){
         url = aBuilder.url;
     }
 
@@ -36,8 +36,8 @@ public class WebSocketHandshake {
             return this;
         }
 
-        public WebSocketHandshake build() {
-            return new WebSocketHandshake(this);
+        public WebSocketHandshakeRequest build() {
+            return new WebSocketHandshakeRequest(this);
         }
 
         private URL url;

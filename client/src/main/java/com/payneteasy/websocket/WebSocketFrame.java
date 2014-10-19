@@ -1,6 +1,5 @@
 package com.payneteasy.websocket;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import static com.payneteasy.websocket.WebSocketUtil.applyMask;

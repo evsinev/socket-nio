@@ -2,7 +2,8 @@ package com.payneteasy.socketio;
 
 import com.payneteasy.websocket.UnauthorizedException;
 import com.payneteasy.websocket.WebSocketClient;
-import com.payneteasy.websocket.WebSocketHandshake;
+import com.payneteasy.websocket.WebSocketHandshakeRequest;
+import com.payneteasy.websocket.WebSocketSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +23,18 @@ public class SocketIoClient {
 
     private final WebSocketClient webSocketClient = new WebSocketClient();
 
-    public void connect(URL aUrl, ISocketIoListener aListener) throws IOException, UnauthorizedException {
+    public SocketIoClient() {
+
+    }
+
+    public SocketIoSession connect(URL aUrl) throws IOException, UnauthorizedException {
         String connectionParameters =  getSocketIoConnectionParameters(aUrl);
 
         SocketIoHandshakeResponse info = parseConnectionInfo(connectionParameters);
-        LOG.debug("handshake response: {}", info);
-        SocketIoProcessor listener = new SocketIoProcessor(aListener);
-        createWebSocketSession(info, aUrl, listener);
+        LOG.debug("Handshake response: {}", info);
+        WebSocketSession webSession = createWebSocketSession(info, aUrl);
+
+        return new SocketIoSession(webSession);
     }
 
     private String getSocketIoConnectionParameters(URL aUrl) throws IOException, UnauthorizedException {
@@ -67,13 +73,14 @@ public class SocketIoClient {
         }
     }
 
-    private void createWebSocketSession(SocketIoHandshakeResponse aInfo, URL aUrl, SocketIoProcessor listener) throws IOException {
+    private WebSocketSession createWebSocketSession(SocketIoHandshakeResponse aInfo, URL aUrl) throws IOException {
         String baseUrl = createBaseUrl(aUrl);
 
-        WebSocketHandshake handshake = new WebSocketHandshake.Builder()
+        WebSocketHandshakeRequest handshake = new WebSocketHandshakeRequest.Builder()
                 .url(baseUrl+"websocket/"+aInfo.sessionId)
                 .build();
-        webSocketClient.connect(handshake, listener);
+
+        return webSocketClient.connect(handshake);
     }
 
     private String createBaseUrl(URL aUrl) {
@@ -86,11 +93,12 @@ public class SocketIoClient {
     }
 
     private SocketIoHandshakeResponse parseConnectionInfo(String aLine) {
+        LOG.debug("Parsing handshake response: {}", aLine);
         String[] tokens = aLine.split(":");
         return new SocketIoHandshakeResponse.Builder()
                 .sessionId(tokens[0])
-                .heartbeatTimeout(Long.parseLong(tokens[1])+1000)
-                .closingTimeout(Long.parseLong(tokens[2])+1000)
+                .heartbeatTimeout(Long.parseLong(tokens[1])*1000)
+                .closingTimeout(Long.parseLong(tokens[2])*1000)
                 .protocols(tokens[3].split(","))
                 .build();
     }

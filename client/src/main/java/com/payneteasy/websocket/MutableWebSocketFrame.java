@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class MutableWebSocketFrame {
 
-    public static final int BUF_LEN = 2048;
+    public static final int BUF_LEN = 16*1024;
 
     public MutableWebSocketFrame() {
     }

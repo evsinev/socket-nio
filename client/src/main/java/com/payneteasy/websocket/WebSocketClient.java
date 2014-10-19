@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLSocketFactory;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,12 +19,9 @@ public class WebSocketClient {
     private static final Logger LOG = LoggerFactory.getLogger(WebSocketClient.class);
     public static final String CR_LF = "\n\r";
 
-    private final WebSocketFrameDecoder frameDecoder = new WebSocketFrameDecoder();
     private final HttpResponseDecoder httDecoder = new HttpResponseDecoder();
-    private final MutableWebSocketFrame frame = new MutableWebSocketFrame();
-    private final OutputQueue queue = new OutputQueue();
 
-    public void connect(WebSocketHandshake aRequest, IWebSocketListener aListener) throws IOException {
+    public WebSocketSession connect(WebSocketHandshakeRequest aRequest) throws IOException {
         URL url = aRequest.url();
 
         Socket socket = createSocket(url);
@@ -41,25 +37,12 @@ public class WebSocketClient {
         InputStream inputStream = socket.getInputStream();
         httDecoder.decode(inputStream);
 
-        // data transfer
-        WebSocketWriterThread writerThread = new WebSocketWriterThread(queue, out, aListener);
-        writerThread.start();
-
-        WebSocketContext context = new WebSocketContext(queue);
-
-        try {
-            while(!Thread.currentThread().isInterrupted()) {
-                frameDecoder.decode(inputStream, frame);
-                LOG.debug("W-IN: {}", frame);
-                aListener.onMessage(frame, context);
-            }
-        } catch (EOFException e) {
-            LOG.debug("Connection closed");
-        }
+        return new WebSocketSession(socket, out, inputStream);
 
     }
 
-    private byte[] createHandshake(WebSocketHandshake aRequest) {
+
+    private byte[] createHandshake(WebSocketHandshakeRequest aRequest) {
         StringBuilder sb = new StringBuilder();
 
         // request line
