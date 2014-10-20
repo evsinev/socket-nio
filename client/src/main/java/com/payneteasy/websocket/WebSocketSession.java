@@ -47,6 +47,8 @@ public class WebSocketSession {
             }
         } catch (EOFException e) {
             LOG.debug("Connection closed");
+        } finally {
+            tryToClose();
         }
 
     }
@@ -56,7 +58,18 @@ public class WebSocketSession {
     }
 
     public void close() throws IOException {
-        writerThread.interrupt();
-        socket.close();
+        tryToClose();
+    }
+
+    private void tryToClose() throws IOException {
+        // The below methods have synchronized blocks already
+
+        if(!writerThread.isInterrupted()) {
+            writerThread.interrupt();
+        }
+
+        if(!socket.isClosed()) {
+            socket.close();
+        }
     }
 }

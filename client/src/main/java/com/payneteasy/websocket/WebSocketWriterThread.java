@@ -23,11 +23,11 @@ public class WebSocketWriterThread extends Thread {
     public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketListener aListener) {
         queue = aQueue;
         out = new BufferedOutputStream(aOutput, 1400);
+        setName("web-socket-writer-"+THREAD_ID.incrementAndGet());
     }
 
     @Override
     public void run() {
-        setName("web-socket-writer-"+THREAD_ID.incrementAndGet());
 
         WebSocketFrameEncoder encoder = new WebSocketFrameEncoder();
 
@@ -62,5 +62,7 @@ public class WebSocketWriterThread extends Thread {
         } catch (IOException e) {
             LOG.error("Unable to close output", e);
         }
+
+        LOG.debug("Exited from thread.");
     }
 }
