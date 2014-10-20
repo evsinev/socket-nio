@@ -65,7 +65,7 @@ public class SocketIoClient {
 
     private void checkResponseCode(HttpURLConnection connection) throws IOException, UnauthorizedException {
         if(connection.getResponseCode() != 200) {
-            if(connection.getResponseCode()==401) {
+            if(connection.getResponseCode() == 401) {
                 throw new UnauthorizedException(connection.getResponseMessage());
             } else {
                 throw new IllegalStateException(connection.getResponseCode()+" "+connection.getResponseMessage());
@@ -93,7 +93,6 @@ public class SocketIoClient {
     }
 
     private SocketIoHandshakeResponse parseConnectionInfo(String aLine) {
-        LOG.debug("Parsing handshake response: {}", aLine);
         String[] tokens = aLine.split(":");
         return new SocketIoHandshakeResponse.Builder()
                 .sessionId(tokens[0])

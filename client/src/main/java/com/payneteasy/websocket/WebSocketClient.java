@@ -63,7 +63,6 @@ public class WebSocketClient {
         sb.append(CR_LF);
 
         String handshake = sb.toString();
-        LOG.debug("handshake = \n{}", handshake);
         return handshake.getBytes();
     }
 

@@ -21,14 +21,14 @@ public class HttpResponseDecoder {
 
     public void decode(InputStream aInput) throws IOException {
 
-        String responseLine = readLine(aInput);
-        if(!"HTTP/1.1 101 Switching Protocols".equals(responseLine)) {
-            throw new ProtocolException("Bad status line: '"+responseLine+"'");
+        String statusLine = readLine(aInput);
+        if(!"HTTP/1.1 101 Switching Protocols".equals(statusLine)) {
+            throw new ProtocolException("Bad status line: '"+statusLine+"'");
         }
 
+        LOG.debug("Status Line: {}", statusLine);
         for(String header; !(header = readLine(aInput)).isEmpty(); ) {
-
-            LOG.debug("Header: {}", header);
+            LOG.debug("     Header: {}", header);
         }
     }
 

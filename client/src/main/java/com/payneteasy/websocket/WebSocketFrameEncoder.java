@@ -1,8 +1,5 @@
 package com.payneteasy.websocket;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -10,8 +7,6 @@ import java.io.OutputStream;
  *
  */
 public class WebSocketFrameEncoder {
-
-    private static final Logger LOG = LoggerFactory.getLogger(WebSocketFrameEncoder.class);
 
     public void encode(WebSocketFrame aFrame, OutputStream aOutput) throws IOException {
         int length = aFrame.payloadLength;
