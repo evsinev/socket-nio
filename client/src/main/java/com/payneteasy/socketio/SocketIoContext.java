@@ -18,4 +18,8 @@ public class SocketIoContext {
             session.sendAck(id);
         }
     }
+
+    public void sendEvent(String aEventName, Object ... args) {
+        session.sendEvent(aEventName, args);
+    }
 }

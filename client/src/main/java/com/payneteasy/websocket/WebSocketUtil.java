@@ -3,13 +3,15 @@ package com.payneteasy.websocket;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
  */
 public class WebSocketUtil {
+
+    public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     public static int readByte(InputStream aInputStream) throws IOException {
         int b = aInputStream.read();
@@ -48,6 +50,6 @@ public class WebSocketUtil {
     }
 
     public static byte[] toBytes(String aReason) {
-        return aReason.getBytes(StandardCharsets.UTF_8);
+        return aReason.getBytes(WebSocketUtil.UTF_8);
     }
 }

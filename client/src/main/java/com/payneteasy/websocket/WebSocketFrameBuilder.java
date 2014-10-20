@@ -1,7 +1,5 @@
 package com.payneteasy.websocket;
 
-import java.nio.charset.StandardCharsets;
-
 import static com.payneteasy.websocket.WebSocketFrame.OpCode.CONNECTION_CLOSE;
 import static com.payneteasy.websocket.WebSocketFrame.OpCode.TEXT_FRAME;
 import static com.payneteasy.websocket.WebSocketUtil.applyMask;
@@ -20,7 +18,7 @@ public class WebSocketFrameBuilder {
 
     public static WebSocketFrame createTextFrame(String aText, byte[] mask) {
 
-        byte[] data = aText.getBytes(StandardCharsets.UTF_8);
+        byte[] data = aText.getBytes(WebSocketUtil.UTF_8);
 
         applyMask(mask, data);
 
