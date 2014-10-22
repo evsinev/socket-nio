@@ -20,15 +20,24 @@ public class WebSocketClient {
     public static final String CR_LF = "\n\r";
 
     private final HttpResponseDecoder httDecoder = new HttpResponseDecoder();
+    private final IWebSocketConfiguration config;
+
+    public WebSocketClient() {
+        config = WebSocketConfiguration.getDefault();
+    }
+
+    public WebSocketClient(IWebSocketConfiguration aConfiguration) {
+         config = aConfiguration;
+    }
 
     public WebSocketSession connect(WebSocketHandshakeRequest aRequest) throws IOException {
         URL url = aRequest.url();
 
         Socket socket = createSocket(url);
-        socket.setSoTimeout(120000);
-        LOG.debug("Connecting to {}...", url);
+        socket.setSoTimeout((int) config.getReadTimeout());
+        LOG.debug("Connecting [ ct={}, rt={} ] to {}  ...", config.getConnectionTimeout(), config.getReadTimeout(), url);
 
-        socket.connect(new InetSocketAddress(url.getHost(), url.getPort()));
+        socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), (int)config.getConnectionTimeout());
 
         // http handshake
         OutputStream out = socket.getOutputStream();
@@ -37,7 +46,7 @@ public class WebSocketClient {
         InputStream inputStream = socket.getInputStream();
         httDecoder.decode(inputStream);
 
-        return new WebSocketSession(socket, out, inputStream);
+        return new WebSocketSession(socket, out, inputStream, config);
 
     }
 
@@ -76,11 +85,16 @@ public class WebSocketClient {
     }
 
     private Socket createSocket(URL aUrl) throws IOException {
+        // https
         if(aUrl.getProtocol().equals("https")) {
             SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
             return sslsocketfactory.createSocket();
+
+        // http
         } else if (aUrl.getProtocol().equals("http")) {
             return new Socket();
+
+        // unknown
         } else {
             throw new IllegalStateException("Unknown protocol "+aUrl.getProtocol());
         }

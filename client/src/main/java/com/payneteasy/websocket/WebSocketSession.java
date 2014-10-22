@@ -23,18 +23,20 @@ public class WebSocketSession {
     private final OutputStream out;
     private final InputStream in;
     private final Socket socket;
+    private final IWebSocketConfiguration config;
 
     private volatile WebSocketWriterThread writerThread;
 
-    WebSocketSession(Socket aSocket, OutputStream aOut, InputStream aInput) {
+    WebSocketSession(Socket aSocket, OutputStream aOut, InputStream aInput, IWebSocketConfiguration aConfig) {
         out = aOut;
         in = aInput;
         socket = aSocket;
+        config = aConfig;
     }
 
     public void startAndWait(IWebSocketListener aListener) throws IOException {
 
-        writerThread = new WebSocketWriterThread(queue, out, aListener);
+        writerThread = new WebSocketWriterThread(queue, out, aListener, config);
         writerThread.start();
 
         WebSocketContext context = new WebSocketContext(queue);

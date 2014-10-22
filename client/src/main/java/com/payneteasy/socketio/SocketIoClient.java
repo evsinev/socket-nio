@@ -1,9 +1,6 @@
 package com.payneteasy.socketio;
 
-import com.payneteasy.websocket.UnauthorizedException;
-import com.payneteasy.websocket.WebSocketClient;
-import com.payneteasy.websocket.WebSocketHandshakeRequest;
-import com.payneteasy.websocket.WebSocketSession;
+import com.payneteasy.websocket.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +18,17 @@ public class SocketIoClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(SocketIoClient.class);
 
-    private final WebSocketClient webSocketClient = new WebSocketClient();
+    private final ISocketIoConfiguration config;
+    private final WebSocketClient webSocketClient;
+
+    public SocketIoClient(ISocketIoConfiguration aSocketIoConfig, IWebSocketConfiguration aWebSocketConfig) {
+        webSocketClient = new WebSocketClient(aWebSocketConfig);
+        config = aSocketIoConfig;
+    }
 
     public SocketIoClient() {
-
+        webSocketClient = new WebSocketClient();
+        config = SocketIoConfiguration.getDefault();
     }
 
     public SocketIoSession connect(URL aUrl) throws IOException, UnauthorizedException {
@@ -39,10 +43,10 @@ public class SocketIoClient {
 
     private String getSocketIoConnectionParameters(URL aUrl) throws IOException, UnauthorizedException {
         HttpURLConnection connection = (HttpURLConnection) aUrl.openConnection();
-        connection.setConnectTimeout(120000);
-        connection.setReadTimeout(120000);
+        connection.setConnectTimeout((int) config.getHandshakeConnectionTimeout());
+        connection.setReadTimeout((int) config.getHandshakeReadTimeout());
 
-        LOG.debug("Connecting to {}", aUrl);
+        LOG.debug("Connecting [ ct={}, rt={} ] to {}", config.getHandshakeConnectionTimeout(), config.getHandshakeReadTimeout(), aUrl);
         connection.connect();
         try {
             checkResponseCode(connection);

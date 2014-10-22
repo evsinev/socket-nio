@@ -19,10 +19,12 @@ public class WebSocketWriterThread extends Thread {
     private final BufferedOutputStream out;
     private final OutputQueue queue;
     private static final AtomicLong THREAD_ID = new AtomicLong();
+    private final IWebSocketConfiguration config;
 
-    public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketListener aListener) {
+    public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketListener aListener, IWebSocketConfiguration aConfig) {
         queue = aQueue;
         out = new BufferedOutputStream(aOutput, 1400);
+        config = aConfig;
         setName("web-socket-writer-"+THREAD_ID.incrementAndGet());
     }
 
@@ -33,7 +35,7 @@ public class WebSocketWriterThread extends Thread {
 
         while(!isInterrupted()) {
             try {
-                WebSocketFrame frame = queue.nextFrame(1, TimeUnit.SECONDS);
+                WebSocketFrame frame = queue.nextFrame(config.getWriterNextFramePoolTimeout(), TimeUnit.MILLISECONDS);
                 if(frame==null) {
                     continue;
                 }
