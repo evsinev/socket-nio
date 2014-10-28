@@ -4,7 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 /**
  *
@@ -12,6 +12,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class WebSocketUtil {
 
     public static final Charset UTF_8 = Charset.forName("UTF-8");
+
+    private static ThreadLocal<Random> randomHolder = new ThreadLocal<Random>() {
+        @Override
+        protected Random initialValue() {
+            return new Random();
+        }
+    };
 
     public static int readByte(InputStream aInputStream) throws IOException {
         int b = aInputStream.read();
@@ -39,7 +46,8 @@ public class WebSocketUtil {
 
     public static byte[] createMask() {
         byte[] mask = new byte[4];
-        ThreadLocalRandom.current().nextBytes(mask);
+        //noinspection ConstantConditions
+        randomHolder.get().nextBytes(mask);
         return mask;
     }
 
