@@ -41,7 +41,23 @@ public class WebSocketFrameDecoder {
             readFully(frame.maskingKey_4, 0, 4, aInputStream);
         }
 
+        checkFrameSize(frame, frame.payloadLength);
         readFully(frame.applicationData, 0, frame.payloadLength, aInputStream);
+    }
+
+    private void checkFrameSize(MutableWebSocketFrame aFrame, int aLength) {
+        // expand frame
+        if(aFrame.applicationData.length < aLength) {
+            LOG.debug("Expanding frame size to {}", aLength);
+            aFrame.applicationData = new byte[aLength];
+            return;
+        }
+
+        // shrink frame to default size
+        if(aFrame.applicationData.length != MutableWebSocketFrame.BUF_LEN) {
+            LOG.debug("Shrinking frame size to default {}", MutableWebSocketFrame.BUF_LEN);
+            aFrame.applicationData = new byte[MutableWebSocketFrame.BUF_LEN];
+        }
     }
 
     private int readPayloadLen(int aByte, InputStream aInputStream) throws IOException {
