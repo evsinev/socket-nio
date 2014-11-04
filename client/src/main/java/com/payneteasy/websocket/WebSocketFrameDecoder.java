@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.net.ProtocolException;
 
 import static com.payneteasy.websocket.WebSocketFrame.OpCode.*;
