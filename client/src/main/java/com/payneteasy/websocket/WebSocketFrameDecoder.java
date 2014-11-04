@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.ProtocolException;
 
 import static com.payneteasy.websocket.WebSocketFrame.OpCode.*;
@@ -72,10 +73,26 @@ public class WebSocketFrameDecoder {
         }
 
         if( len1 == 127 ) {
-            throw new UnsupportedOperationException("readUnsignedLong()");
+            return readUnsignedLong(aInputStream);
         }
 
         throw new ProtocolException("Unknown len1 value " + len1);
+    }
+
+    private int readUnsignedLong(InputStream aInputStream) throws IOException {
+        readFully(lenBuffer, 0, 8, aInputStream);
+
+        // the first byte is the most significant
+        // Big-endian
+        long length = 0;
+        for (byte b : lenBuffer) {
+            length = (length << 8) + (b & 0xff);
+        }
+
+        if (length > Integer.MAX_VALUE) {
+            throw new IllegalStateException("Payload size is to big (" + length + ")");
+        }
+        return (int)length;
     }
 
     private int readUnsignedShort(InputStream aInputStream) throws IOException {
