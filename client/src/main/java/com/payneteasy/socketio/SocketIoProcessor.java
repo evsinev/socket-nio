@@ -34,7 +34,14 @@ class SocketIoProcessor implements IWebSocketListener {
     @Override
     public void onMessage(MutableWebSocketFrame aFrame, WebSocketContext aContext) {
         SocketIoMessage message = decoder.decode(aFrame);
-        LOG.debug("S-IN: {}", message);
+        if (LOG.isDebugEnabled()) {
+            if (SocketIoMessage.Type.EVENT.equals(message.type) && message.data != null) {
+                final JsonElement event = json.parse(message.data);
+                LOG.debug("S-IN:\n{}", json.toPrettyJson(event));
+            } else {
+                LOG.debug("S-IN: {}", message);
+            }
+        }
 
 
         switch (message.type) {

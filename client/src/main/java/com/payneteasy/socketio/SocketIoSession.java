@@ -1,5 +1,6 @@
 package com.payneteasy.socketio;
 
+import com.google.gson.JsonElement;
 import com.payneteasy.socketio.json.GsonConverter;
 import com.payneteasy.socketio.json.IJsonConverter;
 import com.payneteasy.websocket.WebSocketFrame;
@@ -54,7 +55,15 @@ public class SocketIoSession {
 
 
     void sendMessage(SocketIoMessage aMessage) {
-        LOG.debug("S-QUEUE: {}", aMessage);
+        if (LOG.isDebugEnabled()) {
+            if (SocketIoMessage.Type.EVENT.equals(aMessage.type) && aMessage.data != null) {
+                final JsonElement event = json.parse(aMessage.data);
+                LOG.debug("S-QUEUE:\n{}", json.toPrettyJson(event));
+            } else {
+                LOG.debug("S-QUEUE: {}", aMessage);
+            }
+        }
+
         WebSocketFrame frame = encoder.encode(aMessage);
         webSession.send(frame);
     }
