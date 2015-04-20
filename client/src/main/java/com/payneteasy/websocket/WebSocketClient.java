@@ -35,19 +35,38 @@ public class WebSocketClient {
 
         Socket socket = createSocket(url);
         socket.setSoTimeout((int) config.getReadTimeout());
-        LOG.debug("Connecting [ ct={}, rt={} ] to {}  ...", config.getConnectionTimeout(), config.getReadTimeout(), url);
+        try {
+            LOG.debug("Connecting [ ct={}, rt={} ] to {}  ...", config.getConnectionTimeout(), config.getReadTimeout(), url);
 
-        socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), (int)config.getConnectionTimeout());
+            socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), (int) config.getConnectionTimeout());
 
-        // http handshake
-        OutputStream out = socket.getOutputStream();
-        out.write(createHandshake(aRequest));
+            /*if (true) {
+                throw new IOException("Manually break socket for testing.");
+            }*/
 
-        InputStream inputStream = socket.getInputStream();
-        httDecoder.decode(inputStream);
+            // http handshake
+            OutputStream out = socket.getOutputStream();
+            out.write(createHandshake(aRequest));
 
-        return new WebSocketSession(socket, out, inputStream, config);
+            InputStream inputStream = socket.getInputStream();
+            httDecoder.decode(inputStream);
 
+            return new WebSocketSession(socket, out, inputStream, config);
+        } catch (IOException e) {
+            closeSocketSafe(socket);
+            throw e;
+        } catch (RuntimeException e) {
+            closeSocketSafe(socket);
+            throw e;
+        }
+    }
+
+    private void closeSocketSafe(Socket socket) {
+        try {
+            socket.close();
+        } catch (Exception e) {
+            LOG.error("Unable to close socket.", e);
+        }
     }
 
 
