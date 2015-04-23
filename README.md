@@ -2,6 +2,15 @@
 
 An opensource websocket and socket.io java/android implementation.
 
+# Features
+* small size, only 50 KBytes
+* minimum dependencies: only for logging
+* small memory footprint 
+* GC friendly. We use one permanent buffer for reading messages and do not create new byte arrays for each message.
+* Thread-safe. We use a one concurrent queue to pass messages to a writer thread. 
+* Only two threads: one for reading and another for writing. It is very useful then using client in an android services.
+* https support via standart mechanism. We use SSLSocketFactory.createSocket() to create socket so it is very stable on all android devices.
+* production ready. Uses in a messaging application for android existed in Google.Play
 
 ## How to connect via websocket
 ```java
@@ -75,4 +84,8 @@ We use https://github.com/mrniko/netty-socketio to run socket.io server
 ### gradle
 'com.payneteasy.socket-nio:client:1.0-4'
 
+# Dependecies
+* com.google.code.findbugs:jsr305:jar
+* org.slf4j:slf4j-api
+* (optional) com.google.code.gson:gson for socket.io 
 
