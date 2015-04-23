@@ -16,7 +16,7 @@ WebSocketSession session = client.connect(request);
 // It is very useful in Android to track only two threads.
 session.send (...);
 
-// we block current thread until connection is closed. 
+// we block a current thread until a connection is closed. 
 // It can help you to use only one thread to accept messages from a server.
 // Once it done you can rerun it in a loop.
 session.startAndWait(new IWebSocketListener() {
@@ -56,8 +56,8 @@ session.startAndWait(listener);
 
 ```
 
-## Projects using socket-nil
-* http://payber.com
+## Projects using socket-nio
+* http://payber.com in an android app https://play.google.com/store/apps/details?id=com.payneteasy.payber
 
 ## How to start socket.io server
 We use https://github.com/mrniko/netty-socketio to run socket.io server
