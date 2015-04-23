@@ -6,10 +6,10 @@ An opensource websocket and socket.io java/android implementation.
 * small size, only 50 KBytes
 * minimum dependencies: only for logging
 * small memory footprint 
-* GC friendly. We use one permanent buffer for reading messages and do not create new byte arrays for each message.
-* Thread-safe. We use a one concurrent queue to pass messages to a writer thread. 
-* Only two threads: one for reading and another for writing. It is very useful then using client in an android services.
-* https support via standart mechanism. We use SSLSocketFactory.createSocket() to create socket so it is very stable on all android devices.
+* GC friendly. We use one permanent buffer for reading messages and do not create new byte arrays for each message
+* Thread-safe without many synchronization points. You can write a message from any thread. A message will write to a concurrent queue and then a writer thread pick it up. This is only one synchronization point other are in a java socket
+* Only two threads: one for reading and another for writing. It is very useful then using the client in an android services
+* https support via standart mechanism. We use SSLSocketFactory.createSocket() to create a socket so it is very stable on all android devices
 * production ready. Uses in a messaging application for android existed in Google.Play
 
 ## How to connect via websocket
