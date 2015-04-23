@@ -4,7 +4,7 @@
 
     <artifactId>socket-nio</artifactId>
     <groupId>com.payneteasy</groupId>
-    <version>1.0-4</version>
+    <version>1.0-5-SNAPSHOT</version>
 
     <!--  |                         | -->
     <name>socket-nio                ${project.version}</name>
@@ -56,7 +56,7 @@
             <dependency>
                 <groupId>com.payneteasy.socket-nio</groupId>
                 <artifactId>client</artifactId>
-                <version>1.0-4</version>
+                <version>1.0-5-SNAPSHOT</version>
             </dependency>
 
             <dependency>
