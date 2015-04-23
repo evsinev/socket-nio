@@ -36,12 +36,12 @@
     -->
     <distributionManagement>
         <repository>
-            <id>jdbc-proc-release</id>
+            <id>socket-nio-release</id>
             <name>sonatype oss RELEASE repository</name>
             <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-            <id>jdbc-proc-snapshot</id>
+            <id>socket-nio-snapshot</id>
             <name>sonatype oss SNAPSHOT repository</name>
             <url>http://oss.sonatype.org/content/repositories/snapshots</url>
             <uniqueVersion>false</uniqueVersion>
