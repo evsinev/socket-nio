@@ -62,4 +62,17 @@ session.startAndWait(listener);
 ## How to start socket.io server
 We use https://github.com/mrniko/netty-socketio to run socket.io server
 
+## How to connect to your project
+### maven
+```xml
+<dependency>
+	<groupId>com.payneteasy.socket-nio</groupId>
+	<artifactId>client</artifactId>
+	<version>1.0-4</version>
+</dependency>
+```
+
+### gradle
+'com.payneteasy.socket-nio:client:1.0-4'
+
 
