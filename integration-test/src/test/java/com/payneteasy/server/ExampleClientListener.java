@@ -26,6 +26,10 @@ public class ExampleClientListener implements ISocketIoListener {
     }
 
     @Override
+    public void onHeartbeat() {
+    }
+
+    @Override
     public void onFailure(Throwable aError) {
 
     }

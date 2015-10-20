@@ -46,6 +46,7 @@ class SocketIoProcessor implements IWebSocketListener {
 
         switch (message.type) {
             case HEARTBEAT:
+                listener.onHeartbeat();
                 sendHeartBeat();
                 break;
 

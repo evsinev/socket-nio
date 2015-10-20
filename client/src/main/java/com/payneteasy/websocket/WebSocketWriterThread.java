@@ -21,7 +21,7 @@ public class WebSocketWriterThread extends Thread {
     private static final AtomicLong THREAD_ID = new AtomicLong();
     private final IWebSocketConfiguration config;
 
-    public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketListener aListener, IWebSocketConfiguration aConfig) {
+    public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketConfiguration aConfig) {
         queue = aQueue;
         out = new BufferedOutputStream(aOutput, 1400);
         config = aConfig;
@@ -50,13 +50,12 @@ public class WebSocketWriterThread extends Thread {
                     break;
                 }
             } catch (InterruptedException e) {
-                LOG.warn("Thread is interrupted", e);
+                LOG.warn("Socket.io writer thread is interrupted", e);
                 break;
             } catch (Exception e) {
                 // todo
                 LOG.error("Error sending frame", e);
             }
-
         }
 
         try {

@@ -36,7 +36,7 @@ public class WebSocketSession {
 
     public void startAndWait(IWebSocketListener aListener) throws IOException {
 
-        writerThread = new WebSocketWriterThread(queue, out, aListener, config);
+        writerThread = new WebSocketWriterThread(queue, out, config);
         writerThread.start();
 
         WebSocketContext context = new WebSocketContext(queue);

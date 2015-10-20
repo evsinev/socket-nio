@@ -27,6 +27,10 @@ public class SocketIoClientTest {
             }
 
             @Override
+            public void onHeartbeat() {
+            }
+
+            @Override
             public void onFailure(Throwable aError) {
                 LOG.error("Error is", aError);
             }
