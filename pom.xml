@@ -4,7 +4,7 @@
 
     <artifactId>socket-nio</artifactId>
     <groupId>com.payneteasy</groupId>
-    <version>1.0-5-SNAPSHOT</version>
+    <version>1.0-5</version>
 
     <!--  |                         | -->
     <name>socket-nio                ${project.version}</name>
@@ -22,7 +22,8 @@
         <connection>scm:git:git@github.com:evsinev/socket-nio.git</connection>
         <developerConnection>scm:git:git@github.com:evsinev/socket-nio.git</developerConnection>
         <url>https://github.com/evsinev/socket-nio</url>
-    </scm>
+      <tag>socket-nio-1.0-5</tag>
+  </scm>
 
     <developers>
         <developer>
@@ -56,7 +57,7 @@
             <dependency>
                 <groupId>com.payneteasy.socket-nio</groupId>
                 <artifactId>client</artifactId>
-                <version>1.0-5-SNAPSHOT</version>
+                <version>1.0-5</version>
             </dependency>
 
             <dependency>
