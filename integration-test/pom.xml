@@ -4,7 +4,7 @@
 
     <groupId>com.payneteasy.socket-nio</groupId>
     <artifactId>integration-test</artifactId>
-    <version>1.0-6</version>
+    <version>1.0-7-SNAPSHOT</version>
 
     <!--  |                         | -->
     <name>└─integration-test        ${project.version}</name>
@@ -12,7 +12,7 @@
     <parent>
         <groupId>com.payneteasy</groupId>
         <artifactId>socket-nio</artifactId>
-        <version>1.0-6</version>
+        <version>1.0-7-SNAPSHOT</version>
     </parent>
 
     <profiles>
