@@ -10,9 +10,9 @@ public class WebSocketContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebSocketContext.class);
 
-    private final OutputQueue queue;
+    private final IOutputQueue queue;
 
-    public WebSocketContext(OutputQueue queue) {
+    public WebSocketContext(IOutputQueue queue) {
         this.queue = queue;
     }
 

@@ -33,6 +33,17 @@ public class MutableWebSocketFrame {
          return new String(applicationData, 0, payloadLength);
     }
 
+    /**
+     * Create copy of application data. It's safe to use.
+     *
+     * @return binary data
+     */
+    public byte[] getBinaryData() {
+        byte[] buf = new byte[payloadLength];
+        System.arraycopy(applicationData, 0, buf, 0, payloadLength);
+        return buf;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

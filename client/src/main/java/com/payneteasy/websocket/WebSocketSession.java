@@ -18,7 +18,7 @@ public class WebSocketSession {
 
     private final WebSocketFrameDecoder frameDecoder = new WebSocketFrameDecoder();
     private final MutableWebSocketFrame frame = new MutableWebSocketFrame();
-    private final OutputQueue queue = new OutputQueue();
+    private final IOutputQueue          queue;
 
     private final OutputStream out;
     private final InputStream in;
@@ -27,11 +27,17 @@ public class WebSocketSession {
 
     private volatile WebSocketWriterThread writerThread;
 
-    WebSocketSession(Socket aSocket, OutputStream aOut, InputStream aInput, IWebSocketConfiguration aConfig) {
-        out = aOut;
-        in = aInput;
+    WebSocketSession(Socket aSocket
+            , OutputStream            aOut
+            , InputStream             aInput
+            , IWebSocketConfiguration aConfig
+            , IOutputQueue            aQueue
+    ) {
+        out    = aOut;
+        in     = aInput;
         socket = aSocket;
         config = aConfig;
+        queue  = aQueue;
     }
 
     public void startAndWait(IWebSocketListener aListener) throws IOException {

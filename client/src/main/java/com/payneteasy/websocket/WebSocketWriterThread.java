@@ -17,11 +17,11 @@ public class WebSocketWriterThread extends Thread {
     private static final Logger LOG = LoggerFactory.getLogger(WebSocketWriterThread.class);
 
     private final BufferedOutputStream out;
-    private final OutputQueue queue;
+    private final IOutputQueue queue;
     private static final AtomicLong THREAD_ID = new AtomicLong();
     private final IWebSocketConfiguration config;
 
-    public WebSocketWriterThread(OutputQueue aQueue, OutputStream aOutput, IWebSocketConfiguration aConfig) {
+    public WebSocketWriterThread(IOutputQueue aQueue, OutputStream aOutput, IWebSocketConfiguration aConfig) {
         queue = aQueue;
         out = new BufferedOutputStream(aOutput, 1400);
         config = aConfig;

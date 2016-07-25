@@ -6,11 +6,15 @@ import java.util.concurrent.TimeUnit;
 /**
  *
  */
-public class OutputQueue {
+public class OutputQueueImpl implements IOutputQueue {
     private final ArrayBlockingQueue<WebSocketFrame> queue;
 
-    public OutputQueue() {
-        queue = new ArrayBlockingQueue<WebSocketFrame>(1024);
+    public OutputQueueImpl() {
+        this(1024);
+    }
+
+    public OutputQueueImpl(int aSize) {
+        queue = new ArrayBlockingQueue<WebSocketFrame>(aSize);
     }
 
     public void addFrame(WebSocketFrame aFrame) {

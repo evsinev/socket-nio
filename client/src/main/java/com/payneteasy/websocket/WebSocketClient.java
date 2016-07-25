@@ -17,7 +17,7 @@ import java.net.URL;
 public class WebSocketClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebSocketClient.class);
-    public static final String CR_LF = "\n\r";
+    public static final String CR_LF = "\r\n";
 
     private final HttpResponseDecoder httDecoder = new HttpResponseDecoder();
     private final IWebSocketConfiguration config;
@@ -31,6 +31,10 @@ public class WebSocketClient {
     }
 
     public WebSocketSession connect(WebSocketHandshakeRequest aRequest) throws IOException {
+        return connect(aRequest, new OutputQueueImpl());
+    }
+
+    public WebSocketSession connect(WebSocketHandshakeRequest aRequest, IOutputQueue aQueue) throws IOException {
         URL url = aRequest.url();
 
         Socket socket = createSocket(url);
@@ -51,7 +55,7 @@ public class WebSocketClient {
             InputStream inputStream = socket.getInputStream();
             httDecoder.decode(inputStream);
 
-            return new WebSocketSession(socket, out, inputStream, config);
+            return new WebSocketSession(socket, out, inputStream, config, aQueue);
         } catch (IOException e) {
             closeSocketSafe(socket);
             throw e;
