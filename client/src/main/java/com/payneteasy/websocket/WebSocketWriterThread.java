@@ -35,7 +35,13 @@ public class WebSocketWriterThread extends Thread {
 
         while(!isInterrupted()) {
             try {
-                WebSocketFrame frame = queue.nextFrame(config.getWriterNextFramePoolTimeout(), TimeUnit.MILLISECONDS);
+                WebSocketFrame frame;
+                try {
+                    frame = queue.nextFrame(config.getWriterNextFramePoolTimeout(), TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    LOG.warn("Interrupted while getting next frame in writer thread, exiting ...");
+                    break;
+                }
                 if(frame==null) {
                     continue;
                 }
@@ -49,9 +55,6 @@ public class WebSocketWriterThread extends Thread {
                     LOG.error("W-OUT: error "+frame, e);
                     break;
                 }
-            } catch (InterruptedException e) {
-                LOG.warn("Socket.io writer thread is interrupted", e);
-                break;
             } catch (Exception e) {
                 // todo
                 LOG.error("Error sending frame", e);

@@ -51,7 +51,7 @@ public class WebSocketUtil {
         return mask;
     }
 
-    static void applyMask(byte[] mask, byte[] data) {
+    public static void applyMask(byte[] mask, byte[] data) {
         for (int i = 0; i < data.length; i++) {
             data[i] ^= mask[i % 4];
         }

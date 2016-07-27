@@ -80,4 +80,11 @@ public class WebSocketSession {
             socket.close();
         }
     }
+
+    @Override
+    public String toString() {
+        return "WebSocketSession{" +
+                "socket=" + socket +
+                '}';
+    }
 }
