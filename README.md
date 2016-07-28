@@ -3,7 +3,7 @@ An opensource websocket and socket.io java/android implementation.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.payneteasy.socket-nio/client.svg)](https://maven-badges.herokuapp.com/maven-central/com.payneteasy.socket-nio/client/)
 [![Build Status](https://travis-ci.org/evsinev/socket-nio.png?branch=master)](https://travis-ci.org/evsinev/socket-nio)
-[![Coverage Status](https://coveralls.io/repos/evsinev/socket-nio/badge.svg?branch=master&service=github)](https://coveralls.io/github/evsinev/socket-nio?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/evsinev/socket-nio/badge.svg?branch=master)](https://coveralls.io/github/evsinev/socket-nio?branch=master)
 
 # Features
 * small size ( only 50 KBytes )
