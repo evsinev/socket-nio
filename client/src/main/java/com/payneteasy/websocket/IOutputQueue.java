@@ -8,4 +8,5 @@ public interface IOutputQueue {
 
     WebSocketFrame nextFrame(long aTimeout, TimeUnit aUnit) throws InterruptedException;
 
+    void insertFrameAgain(WebSocketFrame aFrame);
 }

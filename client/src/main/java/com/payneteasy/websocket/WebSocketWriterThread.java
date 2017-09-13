@@ -51,22 +51,30 @@ public class WebSocketWriterThread extends Thread {
                     out.flush();
                     LOG.debug("W-OUT: {}", frame);
                 } catch (IOException e) {
-                    // todo close and notify
                     LOG.error("W-OUT: error "+frame, e);
-                    break;
+                    if(config.insertFrameAgainOnWriteError()) {
+                        LOG.info("Reinsert frame again");
+                        queue.insertFrameAgain(frame);
+                    } else {
+                        LOG.error("Skipping this frame to send. Use IWebSocketConfiguration.insertFrameAgainOnWriteError() to reinsert this frame again.");
+                    }
+                    closeOutputStream();
+                    return;
                 }
             } catch (Exception e) {
-                // todo
+                // todo came up with this Exception
                 LOG.error("Error sending frame", e);
             }
         }
+        closeOutputStream();
+    }
 
+    private void closeOutputStream() {
         try {
+            LOG.debug("Closing output stream");
             out.close();
         } catch (IOException e) {
-            LOG.error("Unable to close output", e);
+            LOG.error("Unable to close output stream", e);
         }
-
-        LOG.debug("Exited from thread.");
     }
 }
